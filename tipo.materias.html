@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+ <script src="tau-prolog.js"></script>
+</head>
+
+<body>
+ 	<textarea id="program" rows="10" cols="50">
+ 	materia(tics, generica).
+ 	materia(algebra, generica).
+ 	materia(taller_redaccion, generica).
+ 	materia(programacion1, interdiciplinaria).
+	materia(programacion_estructurada, interdiciplinaria).
+	materia(programacion_oo, interdiciplinaria).
+	materia(redes_de_computadoras, profesionalizante).
+	materia(programacion_avanzada, profesionalizante).
+	materia(programacion_web, profesionalizante).	
+	materia(inteligencia_artificial, profesionalizante).			
+ 	</textarea>
+
+
+ <!-- Nombre del sujeto -->
+ <input type="text" id="name" onKeyup="changeName();" value=""
+placeholder="nombre" />
+ 
+<!-- Button -->
+ <input type="button" value="materias" id="button"
+onClick="clickButton();" />
+ 
+<!-- Respuestas -->
+<div class="example-result" id="result"></div>
+
+
+</body>
+
+<script type="text/javascript">
+ /** tipo de materia */
+
+ // funcion Callback
+ function show(name) {
+
+ // obtener contenedor de la salida
+ var result = document.getElementById("result");
+
+ // Return funcion callback
+ return function(answer) {
+
+ // Validar respuesta
+ if(pl.type.is_substitution(answer)) {
+
+ // obtener el valor de la respuesta
+ var mat = answer.lookup("X");
+
+ // obtener la persona
+ var person = name != "Y" ? name : answer.lookup("Y");
+
+ // mostrar respuesta
+ result.innerHTML = result.innerHTML + "<p>"+ person
++ " es " + mat + "</p>";
+ }
+ };
+ }
+
+ //mostrar las clases de materias
+ function gustos(name) {
+ // Crear session
+ var session = pl.create(1000);
+ // obtener BC
+ var program = document.getElementById("program").value;
+ // Limpiar salida
+ document.getElementById("result").innerHTML = "";
+ // Consultar BC
+ session.consult(program);
+ // Objetivo de la consulta (Query goal)
+ session.query("materia(X," + name + ").");
+ // Buscar respuestas
+ session.answers(show(name), 1000);
+ }
+
+ /** EVENTS */
+
+ // onClick #button
+ function clickButton() {
+ // Get person
+var name = document.getElementById("name").value;
+ name = name != "" ? name : "Y";
+ // Get likes
+ gustos(name);
+ }
+
+
+
+ // onChange #name
+ function changeName() {
+ var name = document.getElementById("name").value;
+ document.getElementById("button").value ="materias " +
+name ;
+ }
+ changeName();
+
+
+
+</script>
+</html>

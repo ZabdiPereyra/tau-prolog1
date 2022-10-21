@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+ <script src="tau-prolog.js"></script>
+</head>
+
+<body>
+ 	<textarea id="program" rows="10" cols="50">
+ 	lleva(tics, luis).
+ 	lleva(algebra, luis).
+ 	lleva(taller_redaccion, luis).
+ 	lleva(programacion1, rosa).
+	lleva(programacion_estructurada, jose).
+	lleva(programacion_oo, pedro).
+	lleva(redes_de_computadoras, pedro).
+	lleva(programacion_avanzada, ana).
+	lleva(programacion_web, juan).	
+	lleva(inteligencia_artificial, ana).			
+ 	</textarea>
+
+
+ <!-- Nombre del sujeto -->
+ <input type="text" id="name" onKeyup="changeName();" value=""
+placeholder="nombre" />
+ 
+<!-- Button -->
+ <input type="button" value="lleva materias" id="button"
+onClick="clickButton();" />
+ 
+<!-- Respuestas -->
+<div class="example-result" id="result"></div>
+
+
+</body>
+
+<script type="text/javascript">
+ 
+
+ // funcion Callback
+ function show(name) {
+
+ // obtener contenedor de la salida
+ var result = document.getElementById("result");
+
+ // Return funcion callback
+ return function(answer) {
+
+ // Validar respuesta
+ if(pl.type.is_substitution(answer)) {
+
+ // obtener el valor de la respuesta
+ var mat = answer.lookup("X");
+
+ // obtener la persona
+ var person = name != "Y" ? name : answer.lookup("Y");
+
+ // mostrar respuesta
+ result.innerHTML = result.innerHTML + "<p>"+ person
++ " lleva " + mat + "</p>";
+ }
+ };
+ }
+
+ //mostrar las materias que lleva
+ function materia(name) {
+ // Crear session
+ var session = pl.create(1000);
+ // obtener BC
+ var program = document.getElementById("program").value;
+ // Limpiar salida
+ document.getElementById("result").innerHTML = "";
+ // Consultar BC
+ session.consult(program);
+ // Objetivo de la consulta (Query goal)
+ session.query("lleva(X," + name + ").");
+ // Buscar respuestas
+ session.answers(show(name), 1000);
+ }
+
+ /** EVENTS */
+
+ // onClick #button
+ function clickButton() {
+ // Get person
+var name = document.getElementById("name").value;
+ name = name != "" ? name : "Y";
+ // Get likes
+ materia(name);
+ }
+
+
+
+ // onChange #name
+ function changeName() {
+ var name = document.getElementById("name").value;
+ document.getElementById("button").value =name +" lleva materias ";
+ }
+ changeName();
+
+
+
+</script>
+</html>
+
+
+
+
+
+
+
+
+
